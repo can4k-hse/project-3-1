@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Jakovlev3_1/1.0.0": {
+        "dependencies": {
+          "CSClasses": "1.0.0",
+          "JSONLibrary": "1.0.0"
+        },
+        "runtime": {
+          "Jakovlev3_1.dll": {}
+        }
+      },
+      "CSClasses/1.0.0": {
+        "dependencies": {
+          "JSONLibrary": "1.0.0"
+        },
+        "runtime": {
+          "CSClasses.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "JSONLibrary/1.0.0": {
+        "runtime": {
+          "JSONLibrary.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Jakovlev3_1/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CSClasses/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "JSONLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

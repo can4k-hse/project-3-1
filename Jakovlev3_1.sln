@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jakovlev3_1", "Jakovlev3_1\Jakovlev3_1.csproj", "{1FAD3554-A835-4E14-8155-CFFB0DB9FF33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONLibrary", "JSONLibrary\JSONLibrary.csproj", "{3D308AE7-840A-4FF9-9BC1-288E05A2D2CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSClasses", "CSClasses\CSClasses.csproj", "{EC5C0FB8-81C3-41AE-8A96-5781029749EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FAD3554-A835-4E14-8155-CFFB0DB9FF33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FAD3554-A835-4E14-8155-CFFB0DB9FF33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FAD3554-A835-4E14-8155-CFFB0DB9FF33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FAD3554-A835-4E14-8155-CFFB0DB9FF33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D308AE7-840A-4FF9-9BC1-288E05A2D2CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D308AE7-840A-4FF9-9BC1-288E05A2D2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D308AE7-840A-4FF9-9BC1-288E05A2D2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D308AE7-840A-4FF9-9BC1-288E05A2D2CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

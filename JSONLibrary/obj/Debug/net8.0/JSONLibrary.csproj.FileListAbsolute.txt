@@ -1,0 +1,11 @@
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\bin\Debug\net8.0\JSONLibrary.deps.json
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\bin\Debug\net8.0\JSONLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\bin\Debug\net8.0\JSONLibrary.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.AssemblyInfoInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.AssemblyInfo.cs
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\refint\JSONLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\ref\JSONLibrary.dll

@@ -1,0 +1,15 @@
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\bin\Debug\net8.0\CSClasses.deps.json
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\bin\Debug\net8.0\CSClasses.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\bin\Debug\net8.0\CSClasses.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\bin\Debug\net8.0\JSONLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\bin\Debug\net8.0\JSONLibrary.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.csproj.AssemblyReference.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.AssemblyInfoInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.AssemblyInfo.cs
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.csproj.Up2Date
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\refint\CSClasses.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\ref\CSClasses.dll
