@@ -9,3 +9,4 @@ C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLi
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\refint\JSONLibrary.dll
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.pdb
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\ref\JSONLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\JSONLibrary\obj\Debug\net8.0\JSONLibrary.sourcelink.json

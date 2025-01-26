@@ -13,3 +13,4 @@ C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasse
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\refint\CSClasses.dll
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.pdb
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\ref\CSClasses.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\CSClasses\obj\Debug\net8.0\CSClasses.sourcelink.json

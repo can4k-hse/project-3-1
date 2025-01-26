@@ -21,7 +21,6 @@ public readonly struct JsonToken
         Null,
         Syntax,
         Undefined,
-        Whitespace,
     }
 
     public TokenType Type { get; }
@@ -61,11 +60,6 @@ public readonly struct JsonToken
         if (token is char c1 && JsonParser.JsonSyntax.Contains(c1))
         {
             Type = TokenType.Syntax;
-        }
-
-        if (token is char c2 && JsonParser.Whitespaces.Contains(c2))
-        {
-            Type = TokenType.Whitespace;
         }
 
         // Если не смогли определить тип токена
@@ -162,7 +156,6 @@ public readonly struct JsonToken
             TokenType.Double => ((double)Value).ToString(),
             TokenType.Syntax => ((char)Value).ToString(),
             TokenType.Integer => ((int)Value).ToString(),
-            TokenType.Whitespace => ((char)Value).ToString(),
             TokenType.Null => "null",
             _ => throw new Exception("Undefined token")
         };
@@ -176,11 +169,6 @@ public readonly struct JsonToken
     {
         return Type.ToString();
     }
-
-    /// <summary>
-    /// Является ли токен whitespace
-    /// </summary>
-    public bool IsWhitespace => Type == TokenType.Whitespace; 
     
     /// <summary>
     /// Является ли данный токен строкой

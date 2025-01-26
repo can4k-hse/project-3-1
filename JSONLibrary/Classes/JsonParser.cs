@@ -9,10 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace JSONLibrary.Classes;
 
-// TODO FIX починить те случаи, когда парсер чистит whitespace когда это не нужно
 public static class JsonParser
 {
-    internal static readonly char[] Whitespaces = [' ', '\n', '\r', '\t'];
+    private static readonly char[] Whitespaces = [' ', '\n', '\r', '\t'];
     internal static readonly char[] JsonSyntax = ['{', '}', ',', ':', '[', ']'];
     
     public static string Stringify(Dictionary<string, string> dictionary)
@@ -223,7 +222,7 @@ public static class JsonParser
 
         result = [];
 
-        for (int i = startIndex + 1; i <= endIndex;)
+        for (int i = startIndex + 1; i < endIndex;)
         {
             JsonToken token = tokens[i];
             if (token.IsPrimitive)
@@ -243,6 +242,7 @@ public static class JsonParser
             }
             else
             {
+                Console.WriteLine(token);
                 throw new FormatException("invalid JSON syntax: array contains wrong element");
             }
             
@@ -266,33 +266,136 @@ public static class JsonParser
     }
     
     /// <summary>
-    /// Удаляет все whitespace элементы, которые лежат вне строк
+    /// Удаляет все Whitespaces элементы, которые лежат вне строк. Алгоритм работы заключается в поиске
+    /// символов, лежащих в JsonSyntax и вне строк. Далее производится удаление элементов равных Whitespaces, которые
+    /// лежат левее или правее найденных JsonSyntax элементов. 
     /// </summary>
-    /// <param name="stringToParse"></param>
-    /// <returns></returns>
+    /// <param name="stringToParse">Строка для обработки</param>
+    /// <returns>Обработанная строка с удаленными Whitespaces</returns>
     private static string ClearWhitespaces(string stringToParse)
     {
         // Результирующая строка
         StringBuilder sb = new();
-
-        // Флаг состояния, обозначающее нахождения внутри некой строки
+        
+        // Позиции символов из JsonSyntax
+        List<int> syntaxPositions = [];
+        
+        // Позиции кавычек
+        var quotePositions = GetQuotesPositions(stringToParse);
         bool inString = false;
-
+        
         for (int i = 0; i < stringToParse.Length; i++)
         {
-            // Изменяем состояние, если кавычка не является частью строки
-            if (stringToParse[i] == '"' && (i == 0 || stringToParse[i - 1] != '\\'))
+            if (quotePositions.Contains(i))
             {
                 inString ^= true;
             }
-
-            if (inString || !Whitespaces.Contains(stringToParse[i]))
+            
+            if (!inString && JsonSyntax.Contains(stringToParse[i]))
             {
-                sb.Append(stringToParse[i]); 
+                syntaxPositions.Add(i);
+            }
+        }
+
+        // Список позиций, символы на которых являются Whitespaces, безопасными для удаления
+        HashSet<int> hs = [];
+        foreach (var pos in syntaxPositions)
+        {
+            for (int i = pos - 1; i >= 0 && Whitespaces.Contains(stringToParse[i]); i--)
+            {
+                hs.Add(i);
+            }
+            
+            for (int i = pos + 1; i < stringToParse.Length && Whitespaces.Contains(stringToParse[i]); i++)
+            {
+                hs.Add(i);
+            }
+        }
+
+        for (int i = 0; i < stringToParse.Length; i++)
+        {
+            if (!hs.Contains(i))
+            {
+                sb.Append(stringToParse[i]);
             }
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Проверяет, что данная строка является 4-значным hex числом
+    /// </summary>
+    /// <param name="numberStr"></param>
+    /// <returns></returns>
+    private static bool IsCorrectHex(string numberStr)
+    {
+        // Регулярное выражение для 4 символов HEX
+        string pattern = @"^[0-9A-Fa-f]{4}$";
+
+        return Regex.IsMatch(numberStr, pattern);
+    }
+    
+    /// <summary>
+    /// Регулярное выражение для проверки строки на валидность
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private static bool IsValidString(string input)
+    {
+        try
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (char.IsControl(input[i]))
+                {
+                    throw new ArgumentException("string contains illegal character");
+                }
+                if (input[i] == '\\')
+                {
+                    if (i + 1 == input.Length)
+                    {
+                        throw new ArgumentException("string contains illegal character");
+                    }
+
+                    // Проверяем \ на корректность согласно стандарту JSON
+                    switch (input[i + 1])
+                    {
+                        case '"':
+                        case '\\':
+                        case '/':
+                        case 'b':
+                        case 'f':
+                        case 'n':
+                        case 'r':
+                        case 't':
+                            i++; break;
+                        case 'u':
+                        {
+                            if (i + 5 >= input.Length)
+                            {
+                                throw new ArgumentException("string contains illegal character");
+                            }
+
+                            string digits = input[(i + 2)..(i + 6)];
+                            if (!IsCorrectHex(digits))
+                            {
+                                throw new ArgumentException("string contains illegal character");
+                            }
+                            
+                            break;
+                        }
+                        default: throw new ArgumentException("string contains illegal character");
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -306,23 +409,36 @@ public static class JsonParser
     /// <exception cref="FormatException">Не удалось выделить строку</exception>
     private static int SelectString(string stringToSelect, int startIndex, out string result)
     {
+        // Получаем позиции кавычек начиная с данного индекса
+        var quotePositions = GetQuotesPositions(stringToSelect);
+        
         // На позиции startIndex должна быть пометка о начале строки
-        if (stringToSelect[startIndex] != '"')
+        if (!quotePositions.Contains(startIndex))
         {
             throw new FormatException("incorrect sequence start sign");
         }
 
+        if (startIndex == 70)
+        {
+            _ = 1 + 3;
+        }
+        
         StringBuilder res = new();
         for (int i = startIndex + 1; i < stringToSelect.Length; i++)
         {
-            if (stringToSelect[i] == '"' && (i == 0 || stringToSelect[i - 1] != '\\'))
+            if (quotePositions.Contains(i))
             {
                 result = res.ToString();
 
                 // Добавляем обособление строки кавычками
                 result = '"' + result + '"';
+
+                if (!IsValidString(result))
+                {
+                    throw new FormatException("incorrect string");
+                }
                 
-                // Возвращаем следущий индекс
+                // Возвращаем следующий индекс
                 return i + 1;
             }
 
@@ -561,7 +677,7 @@ public static class JsonParser
             // ignored
         }
 
-        throw new FormatException("token not found");
+        throw new FormatException("token is wrong, value expected instead");
     }
 
     /// <summary>
@@ -584,6 +700,32 @@ public static class JsonParser
         return tokens;
     }
 
+    /// <summary>
+    /// Возвращает индексы кавычек, обособляющих строки
+    /// </summary>
+    /// <param name="stringToParse"></param>
+    /// <returns></returns>
+    private static HashSet<int> GetQuotesPositions(string stringToParse)
+    {
+        HashSet<int> quotes = [];
+        
+        for (int i = 0; i < stringToParse.Length; i++)
+        {
+            if (stringToParse[i] == '\\') // Встретив обратный \ проигнорируем следующий символ 
+            {
+                i++;
+                continue;
+            }
+
+            if (stringToParse[i] == '"')
+            {
+                quotes.Add(i);
+            }
+        }
+
+        return quotes;
+    }
+    
     /// <summary>
     /// Решает задачу о проверке списка токенов из JsonSyntax, задающих скобки, на соответствие правильной
     /// скобочной последовательности
