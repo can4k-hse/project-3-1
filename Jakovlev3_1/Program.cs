@@ -1,4 +1,10 @@
-﻿using JSONLibrary.Classes;
+﻿// Author: Alexander Yakovlev
+// CreatedAt: 20 января 2025 г. 20:13:23
+// Filename: Program.cs
+// Summary: Точка входа в приложение
+
+
+using JSONLibrary.Classes;
 using System.Globalization;
 
 class Program
@@ -8,8 +14,17 @@ class Program
         Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
         
         string js2;
-        js2 = File.ReadAllText("./../../../test.txt");
-        var parsed = JsonParser.Parse(js2);
-        Console.WriteLine(JsonParser.Stringify(parsed));
+        js2 = File.ReadAllText("./../../../followers.json");
+        var tmp = JsonParser.Parse(js2);
+
+        var c = JsonParser.Parse(tmp["\"elements\""]);
+        foreach (var k in c)
+        {
+            Console.WriteLine(k.Key);
+            Console.WriteLine(k.Value);
+            Console.WriteLine("");
+        }
+        
+        Console.ReadLine();
     }
 }

@@ -1,4 +1,0 @@
-{
-	"text": "This string has "unescaped" quotes inside",
-	"valid": false
-}

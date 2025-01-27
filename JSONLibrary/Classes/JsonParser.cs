@@ -6,6 +6,7 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using JSONLibrary.Interfaces;
 
 namespace JSONLibrary.Classes;
 
@@ -13,13 +14,24 @@ public static class JsonParser
 {
     private static readonly char[] Whitespaces = [' ', '\n', '\r', '\t'];
     internal static readonly char[] JsonSyntax = ['{', '}', ',', ':', '[', ']'];
-    
+
+    public static string Stringify(IJsonObject jsonObject)
+    {
+        Dictionary<string, string> converter = [];
+        foreach (var key in jsonObject.GetAllFields())
+        {
+            converter[key] = jsonObject.GetField(key);
+        }
+
+        return Stringify(converter);
+    }
+
     public static string Stringify(Dictionary<string, string> dictionary)
     {
         StringBuilder sb = new StringBuilder();
 
         sb.Append('{');
-        
+
         foreach (var key in dictionary.Keys)
         {
             sb.Append(key + ':' + dictionary[key]);
@@ -31,8 +43,9 @@ public static class JsonParser
         {
             sb.Remove(sb.Length - 1, 1);
         }
+
         sb.Append('}');
-        
+
         return sb.ToString();
     }
 
@@ -41,7 +54,7 @@ public static class JsonParser
         StringBuilder sb = new StringBuilder();
 
         sb.Append('[');
-        
+
         foreach (var value in array)
         {
             sb.Append(value);
@@ -53,11 +66,12 @@ public static class JsonParser
         {
             sb.Remove(sb.Length - 1, 1);
         }
+
         sb.Append(']');
-        
+
         return sb.ToString();
     }
-    
+
     /// <summary>
     /// Преобразует переданную строку в IJsonObject.
     /// </summary>
@@ -84,7 +98,7 @@ public static class JsonParser
         }
 
         var result = new Dictionary<string, string>();
-        
+
         try
         {
             if (tokens[0].IsFigureBracket == 0)
@@ -125,7 +139,7 @@ public static class JsonParser
         out Dictionary<string, string> result)
     {
         result = new Dictionary<string, string>();
-        
+
         int endIndex;
         try
         {
@@ -135,19 +149,20 @@ public static class JsonParser
         {
             throw new Exception("unexpected error");
         }
-        
+
         result = new Dictionary<string, string>();
-        
+
         // Парсер JSON по стадиям, описанным на рис. 1 https://www.json.org/json-en.html
         for (int i = startIndex + 1; i < endIndex;)
         {
             string key, value;
-            
+
             var cur = tokens[i];
             if (!cur.IsString)
             {
                 throw new FormatException("invalid JSON format: string expected");
             }
+
             key = (string)cur.Value;
 
             // Может произойти выход на пределы массива
@@ -164,15 +179,17 @@ public static class JsonParser
             if (next.IsPrimitive)
             {
                 value = next.ToString();
-            } else if (next.IsFigureBracket == 0)
+            }
+            else if (next.IsFigureBracket == 0) // object
             {
                 ParseObject(tokens, bracketsMatches, i, out var nested);
                 value = Stringify(nested);
                 i = bracketsMatches[i];
-            } else if (next.IsSquareBracket == 0)
+            }
+            else if (next.IsSquareBracket == 0) // array
             {
                 ParseArray(tokens, bracketsMatches, i, out var nested);
-                value = Stringify(nested);   
+                value = Stringify(nested);
                 i = bracketsMatches[i];
             }
             else
@@ -184,6 +201,7 @@ public static class JsonParser
             {
                 throw new FormatException("invalid JSON format: duplicate key");
             }
+
             result[key] = value;
 
             i++;
@@ -229,12 +247,14 @@ public static class JsonParser
             {
                 result.Add(token.ToString());
                 i++;
-            } else if (token.IsFigureBracket == 0)
+            }
+            else if (token.IsFigureBracket == 0)
             {
                 ParseObject(tokens, bracketsMatches, i, out var nested);
                 result.Add(Stringify(nested));
                 i = bracketsMatches[i] + 1;
-            } else if (token.IsSquareBracket == 0)
+            }
+            else if (token.IsSquareBracket == 0)
             {
                 ParseArray(tokens, bracketsMatches, i, out var nested);
                 result.Add(Stringify(nested));
@@ -245,7 +265,7 @@ public static class JsonParser
                 Console.WriteLine(token);
                 throw new FormatException("invalid JSON syntax: array contains wrong element");
             }
-            
+
             if (i == endIndex)
             {
                 break;
@@ -264,7 +284,7 @@ public static class JsonParser
             }
         }
     }
-    
+
     /// <summary>
     /// Удаляет все Whitespaces элементы, которые лежат вне строк. Алгоритм работы заключается в поиске
     /// символов, лежащих в JsonSyntax и вне строк. Далее производится удаление элементов равных Whitespaces, которые
@@ -276,21 +296,21 @@ public static class JsonParser
     {
         // Результирующая строка
         StringBuilder sb = new();
-        
+
         // Позиции символов из JsonSyntax
         List<int> syntaxPositions = [];
-        
+
         // Позиции кавычек
         var quotePositions = GetQuotesPositions(stringToParse);
         bool inString = false;
-        
+
         for (int i = 0; i < stringToParse.Length; i++)
         {
             if (quotePositions.Contains(i))
             {
                 inString ^= true;
             }
-            
+
             if (!inString && JsonSyntax.Contains(stringToParse[i]))
             {
                 syntaxPositions.Add(i);
@@ -298,14 +318,14 @@ public static class JsonParser
         }
 
         // Список позиций, символы на которых являются Whitespaces, безопасными для удаления
-        HashSet<int> hs = [];
+        List<int> hs = [];
         foreach (var pos in syntaxPositions)
         {
             for (int i = pos - 1; i >= 0 && Whitespaces.Contains(stringToParse[i]); i--)
             {
                 hs.Add(i);
             }
-            
+
             for (int i = pos + 1; i < stringToParse.Length && Whitespaces.Contains(stringToParse[i]); i++)
             {
                 hs.Add(i);
@@ -332,10 +352,9 @@ public static class JsonParser
     {
         // Регулярное выражение для 4 символов HEX
         string pattern = @"^[0-9A-Fa-f]{4}$";
-
         return Regex.IsMatch(numberStr, pattern);
     }
-    
+
     /// <summary>
     /// Регулярное выражение для проверки строки на валидность
     /// </summary>
@@ -351,6 +370,7 @@ public static class JsonParser
                 {
                     throw new ArgumentException("string contains illegal character");
                 }
+
                 if (input[i] == '\\')
                 {
                     if (i + 1 == input.Length)
@@ -382,7 +402,7 @@ public static class JsonParser
                             {
                                 throw new ArgumentException("string contains illegal character");
                             }
-                            
+
                             break;
                         }
                         default: throw new ArgumentException("string contains illegal character");
@@ -404,25 +424,19 @@ public static class JsonParser
     /// <param name="stringToSelect">Данная строка</param>
     /// <param name="startIndex">Номер, с которого должна выделяться строка</param>
     /// <param name="result">Выделенная строка</param>
+    /// <param name="quotePositions">Индексы кавычек, обосабливающих строки</param>
     /// <returns>Инкрементированный индекс конца токена</returns>
     /// <example>stringToSelect="abc"d"f, startIndex=4 -> result=d, return=7</example>
     /// <exception cref="FormatException">Не удалось выделить строку</exception>
-    private static int SelectString(string stringToSelect, int startIndex, out string result)
+    private static int SelectString(string stringToSelect, int startIndex, HashSet<int> quotePositions,
+        out string result)
     {
-        // Получаем позиции кавычек начиная с данного индекса
-        var quotePositions = GetQuotesPositions(stringToSelect);
-        
         // На позиции startIndex должна быть пометка о начале строки
         if (!quotePositions.Contains(startIndex))
         {
             throw new FormatException("incorrect sequence start sign");
         }
 
-        if (startIndex == 70)
-        {
-            _ = 1 + 3;
-        }
-        
         StringBuilder res = new();
         for (int i = startIndex + 1; i < stringToSelect.Length; i++)
         {
@@ -437,7 +451,7 @@ public static class JsonParser
                 {
                     throw new FormatException("incorrect string");
                 }
-                
+
                 // Возвращаем следующий индекс
                 return i + 1;
             }
@@ -605,15 +619,17 @@ public static class JsonParser
     /// <param name="stringToSelect">Данная строка</param>
     /// <param name="startIndex">Номер, с которого должна выделяться строка</param>
     /// <param name="result">Выделенное значение</param>
+    /// <param name="quotePositions">Индексы кавычек, обосабливающих строки</param>
     /// <returns>Инкрементированный индекс конца токена</returns>
     /// <exception cref="FormatException">Не удалось выделить токен</exception>
-    private static int SelectToken(string stringToSelect, int startIndex, out JsonToken result)
+    private static int SelectToken(string stringToSelect, int startIndex, HashSet<int> quotePositions,
+        out JsonToken result)
     {
         int newIndex;
 
         try
         {
-            newIndex = SelectString(stringToSelect, startIndex, out string res);
+            newIndex = SelectString(stringToSelect, startIndex, quotePositions, out string res);
             result = new JsonToken(res);
             return newIndex;
         }
@@ -683,17 +699,18 @@ public static class JsonParser
     /// <summary>
     /// Разделяет данную строку на токены JsonToken 
     /// </summary>
-    /// <param name="stringToSplit"></param>
+    /// <param name="stringToSplit">Данная стока</param>
+    /// <param name="quotePositions">Индексы кавычек, обосабливающих строки</param>
     /// <exception cref="FormatException ">Не удалось выделить токены</exception>
     /// <returns></returns>
-    public static List<JsonToken> SplitIntoTokens(string stringToSplit)
+    private static List<JsonToken> SplitIntoTokens(string stringToSplit, HashSet<int> quotePositions)
     {
         List<JsonToken> tokens = [];
 
         int index = 0;
         while (index != stringToSplit.Length)
         {
-            index = SelectToken(stringToSplit, index, out JsonToken token);
+            index = SelectToken(stringToSplit, index, quotePositions, out JsonToken token);
             tokens.Add(token);
         }
 
@@ -708,7 +725,7 @@ public static class JsonParser
     private static HashSet<int> GetQuotesPositions(string stringToParse)
     {
         HashSet<int> quotes = [];
-        
+
         for (int i = 0; i < stringToParse.Length; i++)
         {
             if (stringToParse[i] == '\\') // Встретив обратный \ проигнорируем следующий символ 
@@ -725,7 +742,7 @@ public static class JsonParser
 
         return quotes;
     }
-    
+
     /// <summary>
     /// Решает задачу о проверке списка токенов из JsonSyntax, задающих скобки, на соответствие правильной
     /// скобочной последовательности
@@ -794,7 +811,8 @@ public static class JsonParser
         try
         {
             stringToParse = ClearWhitespaces(stringToParse);
-            List<JsonToken> tokens = SplitIntoTokens(stringToParse);
+            HashSet<int> quotePositions = GetQuotesPositions(stringToParse);
+            List<JsonToken> tokens = SplitIntoTokens(stringToParse, quotePositions);
 
             Dictionary<int, int> bracketMatches;
             try
