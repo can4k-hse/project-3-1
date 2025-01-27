@@ -7,6 +7,8 @@ using JSONLibrary.Classes;
 using JSONLibrary.Interfaces;
 namespace CSClasses;
 
+
+// TODO сделать заполнение по умолчанию
 public struct Follower : IJsonObject
 {
     public string Id { get; private set; }
@@ -47,8 +49,6 @@ public struct Follower : IJsonObject
     {
         return AllFields.Split(' ');
     }
-
-    // TODO добавить строковую интерпритацию Xtriggers и FollowerAspects
     
     public string? GetField(string fieldName)
     {
