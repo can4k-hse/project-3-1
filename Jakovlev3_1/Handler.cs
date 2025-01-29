@@ -35,7 +35,7 @@ public class Handler
     {
         _status = MenuStatus.Enable;
         
-        Console.WriteLine("Добро пожаловать!\n");
+        Console.WriteLine("Начало сеанса.");
         ShowCommands();
 
         while (_status is MenuStatus.Enable)
@@ -72,13 +72,15 @@ public class Handler
         Console.WriteLine("<Список доступных команд>");
         string[] commands =
         [
+            "clear. Отчистить консоль",
+            "help. Вывести список доступных команд",
+            "exit. Завершить сессию",
             "1. Изменить источник ввода данных",
-            "[]2. Ввести данные",
+            "2. Ввести данные",
             "[]3. Отфильтровать данные",
             "[]4. Отсортировать данные",
             "[]5. Узнать",
             "[]6. Вывести данные",
-            "[]7. Выход"
         ];
         
         Console.WriteLine(string.Join("\n", commands) + "\n");
@@ -90,7 +92,7 @@ public class Handler
     private void Exit()
     {
         _status = MenuStatus.Disable;
-        Console.WriteLine("До свидания!");
+        Console.WriteLine("Сеанс завершен.");
     }
 
     /// <summary>
@@ -101,7 +103,15 @@ public class Handler
         Console.WriteLine("Неизвестная команда...");
     }
 
-    private void InputDataCommand()
+    /// <summary>
+    /// Отчищает консоль
+    /// </summary>
+    private void ClearCommand()
+    {
+        Console.Clear();
+    }
+
+    private void SwitchInputCommand()
     {
         Console.WriteLine("Укажите новый способ ввода данных:");
         string[] commands =
@@ -138,6 +148,11 @@ public class Handler
         }
     }
 
+    private void InputCommand()
+    {
+        _state.TryReadData();
+    }
+
     /// <summary>
     /// Обработчик для команд
     /// </summary>
@@ -152,12 +167,15 @@ public class Handler
 
         switch (command)
         {
-            case "1": InputDataCommand(); break;
-            case "2": throw new NotImplementedException();
+            case "1": SwitchInputCommand(); break;
+            case "2": InputCommand(); break;
             case "3": throw new NotImplementedException();
             case "4": throw new NotImplementedException();
             case "5": throw new NotImplementedException();
             case "6": throw new NotImplementedException();
+            case "exit": Exit(); break;
+            case "help": ShowCommands(); break;
+            case "clear": ClearCommand(); break;
             default: UnknownCommand(); break;
         }
     }

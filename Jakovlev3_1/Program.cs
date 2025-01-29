@@ -14,21 +14,15 @@ class Program
     {
         Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
         
-        // string js2;
-        // js2 = File.ReadAllText("./../../../followers.json");
-        // var tmp = JsonParser.Parse(js2);
-        //
-        // var c = JsonParser.Parse(tmp["\"elements\""]);
-        // foreach (var k in c)
-        // {
-        //     Console.WriteLine(k.Key);
-        //     Console.WriteLine(k.Value);
-        //     Console.WriteLine("");
-        // }
-        //
-        // Console.ReadLine();
-
         var handler = new Handler(new State());
-        handler.Start();
+        try
+        {
+            handler.Start();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Console.ReadLine();
+        }
     }
 }

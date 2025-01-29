@@ -15,6 +15,47 @@ public static class JsonParser
     private static readonly char[] Whitespaces = [' ', '\n', '\r', '\t'];
     internal static readonly char[] JsonSyntax = ['{', '}', ',', ':', '[', ']'];
 
+    /// <summary>
+    /// Считывает данные в IJsonObject из потока
+    /// </summary>
+    /// <param name="jsonObject">Объект для считывания</param>
+    /// <param name="stream">Поток ввода</param>
+    /// <exception cref="FormatException">Невозможно запарсить строку в объект</exception>
+    public static void ReadJson(IJsonObject jsonObject, StreamReader stream)
+    {
+        
+        // Времена изменяем поток ввода на данный
+        Console.SetIn(stream);
+        string result = Console.In.ReadToEnd();
+
+        // Парсим строку и прокидываем значения в jsonObject
+        var parsed = Parse(result);
+
+        // TODO remove
+        Console.WriteLine(result);
+        
+        try
+        {
+            foreach (var keyValue in parsed)
+            {
+                jsonObject.SetField(keyValue.Key, keyValue.Value);
+            }
+        }
+        catch (KeyNotFoundException e)
+        {
+            throw new FormatException("Json data error:" + e.Message);
+        }
+        
+        // Возвращаем консольный ввод для корректной работы консоли
+        var defaultInput = new StreamReader(Console.OpenStandardInput());
+        Console.SetIn(defaultInput);
+    }
+    
+    public static void WriteJson(IJsonObject json)
+    {
+        Console.Write(Stringify(json));
+    }
+
     public static string Stringify(IJsonObject jsonObject)
     {
         Dictionary<string, string> converter = [];
