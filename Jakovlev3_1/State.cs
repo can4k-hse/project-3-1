@@ -3,18 +3,16 @@
 // Filename: State.cs
 // Summary: Хранит состояние приложения, текущие JSON, настройки фильтраций, сортировки и т.д.
 
-using System.Text;
+// TODO FIX DEFAULT INPUT
+
 using CSClasses;
 using JSONLibrary.Classes;
-using JSONLibrary.Interfaces;
-
 public class State
 {
     /// <summary>
     /// Список последователей
     /// </summary>
-    private List<Follower> _followers = [];
-
+    private FollowersList Followers; 
     public State()
     {
     }
@@ -28,12 +26,12 @@ public class State
     /// <summary>
     /// Относительный путь к файлу ввода данных.
     /// </summary>
-    private string? inputFilePath = null;
+    private string? inputFilePath = "./../../../followers.json";
 
     /// <summary>
     /// Режим вывода
     /// </summary>
-    private IOMode inputMode = IOMode.Console;
+    private IOMode inputMode = IOMode.File;
 
     /// <summary>
     /// Изменяет источник ввода данных на консоль
@@ -62,45 +60,38 @@ public class State
     }
 
     /// <summary>
-    /// Пытается считать данные выбранным способом
+    /// Пытается считать данные выбранным способом и записать в Followers
     /// </summary>
-    /// <param name="inputString"></param>
     /// <returns></returns>
-    public bool TryReadData()
+    public void TryReadData()
     {
-        try
-        {
-            StreamReader inputStream = null;
+        StreamReader inputStream;
 
-            switch (inputMode)
+        switch (inputMode)
+        {
+            case IOMode.File:
             {
-                case IOMode.File:
-                {
-                    Console.WriteLine("Данные считываются по пути: " + inputFilePath);
-                    inputStream = new StreamReader(inputFilePath);
-                    break;
-                }
-
-                case IOMode.Console:
-                {
-                    Console.WriteLine("Введите данные в консоль, для окончания ввода нажмите Enter, а затем Ctrl+Z: " +
-                                      inputFilePath);
-                    inputStream = new StreamReader(Console.OpenStandardInput());
-                    break;
-                }
-
-                default: throw new NotImplementedException("cannot read data");
+                Console.WriteLine("Данные считываются по пути: " + inputFilePath);
+                inputStream = new StreamReader(inputFilePath);
+                break;
             }
+
+            case IOMode.Console:
+            {
+                Console.WriteLine("Введите данные в консоль, для окончания ввода нажмите Enter, а затем Ctrl+Z: " +
+                                  inputFilePath);
+                inputStream = new StreamReader(Console.OpenStandardInput());
+                break;
+            }
+
+            default: throw new NotImplementedException("wrong input method");
+        }
             
-            JsonParser.ReadJson(null, inputStream);
-
-            return true;
-        }
-
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return false;
-        }
+        // Пытаемся считать данные в tmp список
+        FollowersList tmp = new FollowersList();
+        JsonParser.ReadJson(tmp, inputStream);
+        
+        // В случае успешного считывания назначаем ссылку
+        Followers = tmp;
     }
 }

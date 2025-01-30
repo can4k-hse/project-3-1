@@ -30,5 +30,6 @@ public interface IJsonObject
     /// <param name="fieldName">Ключ в кавычках</param>
     /// <param name="value">Корректное с точки зрение нотации значение</param>
     /// <exception cref="KeyNotFoundException">Возникает при попытке изменить несуществующее поле</exception>
+    /// <exception cref="FormatException">Возникает при попытке присвоить неверное значение полю</exception>
     void SetField(string fieldName, string value);
 }

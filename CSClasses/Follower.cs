@@ -12,9 +12,14 @@ namespace CSClasses;
 public struct Follower : IJsonObject
 {
     public string Id { get; private set; }
+    public string Icon { get; private set; }
     public string Label { get; private set; }
     public string Description { get; private set; }
+    public string Comments { get; private set; }
+    public int Lifetime { get; private set; }
     public string UniquenessGroup { get; private set; }
+    
+    public string DecayTo { get; private set; }
     
     public FollowerAspects Aspects { get; private set; }
     public FollowerXtriggers Xtriggers { get; private set; }
@@ -36,7 +41,7 @@ public struct Follower : IJsonObject
         }
         catch (Exception e)
         {
-            throw new FormatException("Wrong JSON data: " + e.Message);
+            throw new FormatException("wrong follower data" + e.Message);
         }
     }
     
@@ -44,7 +49,7 @@ public struct Follower : IJsonObject
     /// <summary>
     /// Перечисление всех полей тождественного JSON
     /// </summary>
-    private const string AllFields = "id label description xtrigger aspects uniquenessgroup";
+    private const string AllFields = "id label description xtrigger aspects uniquenessgroup lifetime icon decayTo";
     public IEnumerable<string> GetAllFields()
     {
         return AllFields.Split(' ');
@@ -54,12 +59,16 @@ public struct Follower : IJsonObject
     {
         return fieldName switch
         {
-            "id" => $"{Id}",
-            "label" => $"{Label}",
-            "description" => $"{Description}",
-            "uniquenessgroup" => $"{UniquenessGroup}",
-            "xtriggers" => JsonParser.Stringify(Xtriggers),
-            "aspects" => JsonParser.Stringify(Aspects),
+            "\"id\"" => $"{Id}",
+            "\"icon\"" => $"{Icon}",
+            "\"decayTo\"" => $"{DecayTo}",
+            "\"label\"" => $"{Label}",
+            "\"description\"" => $"{Description}",
+            "\"uniquenessgroup\"" => $"{UniquenessGroup}",
+            "\"lifetime\"" => $"{Lifetime}",
+            "\"comments\"" => $"{Comments}",
+            "\"xtriggers\"" => JsonParser.Stringify(Xtriggers),
+            "\"aspects\"" => JsonParser.Stringify(Aspects),
             _ => null
         };
     }
@@ -69,14 +78,18 @@ public struct Follower : IJsonObject
         switch (fieldName)
         {
             case "\"id\"": Id = value; break;
+            case "\"icon\"": Icon = value; break;
             case "\"label\"": Label = value; break;
             case "\"description\"": Description = value; break;
             case "\"uniquenessgroup\"": UniquenessGroup = value; break;
+            case "\"lifetime\"": Lifetime = int.Parse(value); break;
+            case "\"decayTo\"": DecayTo = value; break; 
+            case "\"comments\"": Comments = value; break;
             
             // Для вложенных полей добавляем конструкторы вложенных классов 
             case "\"xtriggers\"": Xtriggers = new FollowerXtriggers(value); break;
             case "\"aspects\"": Aspects = new FollowerAspects(value); break;
-            default: throw new KeyNotFoundException();
+            default: throw new KeyNotFoundException(fieldName);
         }
     }
 }

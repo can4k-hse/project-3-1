@@ -43,11 +43,6 @@ public class Handler
             Console.Write(LineSign + " ");
             string? command = Console.ReadLine();
 
-            if (command is null)
-            {
-                break;
-            }
-
             try
             {
                 HandleCommand(command);
@@ -150,7 +145,16 @@ public class Handler
 
     private void InputCommand()
     {
-        _state.TryReadData();
+        try
+        {
+            _state.TryReadData();
+            Console.WriteLine("Данные успешно введены.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("При вводе данных произошла ошибка: " + e.Message); 
+        }
+       
     }
 
     /// <summary>

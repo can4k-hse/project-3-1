@@ -15,14 +15,6 @@ class Program
         Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
         
         var handler = new Handler(new State());
-        try
-        {
-            handler.Start();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            Console.ReadLine();
-        }
+        handler.Start();
     }
 }

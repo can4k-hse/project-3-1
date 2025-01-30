@@ -24,16 +24,19 @@ public static class JsonParser
     public static void ReadJson(IJsonObject jsonObject, StreamReader stream)
     {
         
-        // Времена изменяем поток ввода на данный
+        // Временно изменяем поток ввода на данный
         Console.SetIn(stream);
         string result = Console.In.ReadToEnd();
 
         // Парсим строку и прокидываем значения в jsonObject
         var parsed = Parse(result);
-
-        // TODO remove
-        Console.WriteLine(result);
         
+        // Возвращаем стандартный ввод для корректной работы меню
+        stream.Dispose();
+        var defaultInput = new StreamReader(Console.OpenStandardInput());
+        Console.SetIn(defaultInput);
+        
+        // Пытаемся считать данные
         try
         {
             foreach (var keyValue in parsed)
@@ -43,12 +46,8 @@ public static class JsonParser
         }
         catch (KeyNotFoundException e)
         {
-            throw new FormatException("Json data error:" + e.Message);
+            throw new FormatException("Json data error: " + e.Message);
         }
-        
-        // Возвращаем консольный ввод для корректной работы консоли
-        var defaultInput = new StreamReader(Console.OpenStandardInput());
-        Console.SetIn(defaultInput);
     }
     
     public static void WriteJson(IJsonObject json)
@@ -303,7 +302,6 @@ public static class JsonParser
             }
             else
             {
-                Console.WriteLine(token);
                 throw new FormatException("invalid JSON syntax: array contains wrong element");
             }
 
@@ -872,5 +870,55 @@ public static class JsonParser
         {
             throw new FormatException("JSON syntax error: " + e.Message);
         }
+    }
+    
+    /// <summary>
+    /// Преобразует псевдомассив (словарь, где в качестве ключей используются строковые представления индексов)
+    /// в массив строк. Обратите внимание, что индексы не должны пропускаться.
+    /// </summary>
+    /// <param name="pseudoArray"></param>
+    /// <returns></returns>
+    /// <exception cref="FormatException"></exception>
+    public static List<string> ConvertPseudoArrayToList(Dictionary<string, string> pseudoArray)
+    {
+        var maxKey = -1;
+        
+        // Проверяем, что все ключи pseudoArray являются строковыми представлениями чисел
+        foreach (var keyValue in pseudoArray)
+        {
+            if (!int.TryParse(keyValue.Key, out int integerKey) || integerKey < 0)
+            {
+                throw new FormatException("invalid pseudo array");
+            }
+            
+            maxKey = Math.Max(maxKey, integerKey);
+        }
+
+        string[] result = new string[maxKey + 1];
+        
+        for (int i = 0; i <= maxKey; i++)
+        {
+            if (pseudoArray.ContainsKey(i.ToString()))
+            {
+                result[i] = (pseudoArray[i.ToString()]);
+            }
+            else
+            {
+                // В случае пропуска индекса пробрасываем исключение
+                throw new FormatException("invalid pseudo array");
+            }
+        }
+
+        return result.ToList();
+    }
+
+    /// <summary>
+    /// Возвращает строковое представление списка IJsonObject
+    /// </summary>
+    /// <param name="jsonObjects"></param>
+    /// <returns></returns>
+    public static string StringifyIJsonList(List<IJsonObject> jsonObjects)
+    {
+        return JsonParser.Stringify(jsonObjects.Select(JsonParser.Stringify).ToList());
     }
 }
