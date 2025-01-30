@@ -5,7 +5,6 @@
 // Описание JSON содержится на странице https://www.json.org/json-en.html
 
 using System.Text;
-using System.Text.RegularExpressions;
 using JSONLibrary.Interfaces;
 
 namespace JSONLibrary.Classes;
@@ -29,12 +28,23 @@ public static class JsonParser
         string result = Console.In.ReadToEnd();
 
         // Парсим строку и прокидываем значения в jsonObject
-        var parsed = Parse(result);
-        
-        // Возвращаем стандартный ввод для корректной работы меню
-        stream.Dispose();
-        var defaultInput = new StreamReader(Console.OpenStandardInput());
-        Console.SetIn(defaultInput);
+        Dictionary<string, string> parsed = [];
+        try
+        {
+            parsed = Parse(result);
+        }
+        catch (Exception e)
+        {
+            // Пробрасываем исключение
+            throw new FormatException("cannot read json " + e.Message);
+        }
+        finally
+        {
+            // Возвращаем стандартный ввод для корректной работы меню
+            stream.Dispose();
+            var defaultInput = new StreamReader(Console.OpenStandardInput());
+            Console.SetIn(defaultInput);
+        }
         
         // Пытаемся считать данные
         try
@@ -50,11 +60,41 @@ public static class JsonParser
         }
     }
     
-    public static void WriteJson(IJsonObject json)
+    /// <summary>
+    /// Выводит json объект в поток
+    /// </summary>
+    /// <param name="json"></param>
+    /// <param name="stream"></param>
+    /// <exception cref="FormatException"></exception>
+    public static void WriteJson(IJsonObject json, StreamWriter stream)
     {
-        Console.Write(Stringify(json));
+        // Временно изменяем поток вывода на данный
+        Console.SetOut(stream);
+
+        try
+        {
+            string output = Stringify(json);
+            Console.WriteLine(output);
+        }
+        catch (Exception e)
+        {
+            throw new FormatException("Json string error: " + e.Message);
+        }
+        finally
+        {
+            // Возвращаем стандартный вывод для корректной работы меню
+            stream.Dispose();
+            var defaultOutput = new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding); // укажем кодировку
+            defaultOutput.AutoFlush = true;
+            Console.SetOut(defaultOutput);
+        }
     }
 
+    /// <summary>
+    /// Возвращает строковое представление IJsonObject объекта
+    /// </summary>
+    /// <param name="jsonObject"></param>
+    /// <returns></returns>
     public static string Stringify(IJsonObject jsonObject)
     {
         Dictionary<string, string> converter = [];
@@ -66,6 +106,11 @@ public static class JsonParser
         return Stringify(converter);
     }
 
+    /// <summary>
+    /// Возвращает строковое представление словаря строка-строка
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <returns></returns>
     public static string Stringify(Dictionary<string, string> dictionary)
     {
         StringBuilder sb = new StringBuilder();
@@ -89,6 +134,11 @@ public static class JsonParser
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Возвращает строковое представление списка строк
+    /// </summary>
+    /// <param name="array"></param>
+    /// <returns></returns>
     public static string Stringify(List<string> array)
     {
         StringBuilder sb = new StringBuilder();
@@ -265,6 +315,15 @@ public static class JsonParser
         }
     }
 
+    /// <summary>
+    /// Преобразует данный лист токенов в список строк, 
+    /// </summary>
+    /// <param name="tokens">Список JSON токенов</param>
+    /// <param name="bracketsMatches">Словарь int-int, в котором определенны соответствующие пары скобок</param>
+    /// <param name="startIndex">Индекс начала парсера</param>
+    /// <param name="result">Список строк</param>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">Срабатывает при неверном списке токенов</exception>
     private static void ParseArray(List<JsonToken> tokens, Dictionary<int, int> bracketsMatches, int startIndex,
         out List<string> result)
     {
@@ -383,81 +442,6 @@ public static class JsonParser
     }
 
     /// <summary>
-    /// Проверяет, что данная строка является 4-значным hex числом
-    /// </summary>
-    /// <param name="numberStr"></param>
-    /// <returns></returns>
-    private static bool IsCorrectHex(string numberStr)
-    {
-        // Регулярное выражение для 4 символов HEX
-        string pattern = @"^[0-9A-Fa-f]{4}$";
-        return Regex.IsMatch(numberStr, pattern);
-    }
-
-    /// <summary>
-    /// Регулярное выражение для проверки строки на валидность
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    private static bool IsValidString(string input)
-    {
-        try
-        {
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (char.IsControl(input[i]))
-                {
-                    throw new ArgumentException("string contains illegal character");
-                }
-
-                if (input[i] == '\\')
-                {
-                    if (i + 1 == input.Length)
-                    {
-                        throw new ArgumentException("string contains illegal character");
-                    }
-
-                    // Проверяем \ на корректность согласно стандарту JSON
-                    switch (input[i + 1])
-                    {
-                        case '"':
-                        case '\\':
-                        case '/':
-                        case 'b':
-                        case 'f':
-                        case 'n':
-                        case 'r':
-                        case 't':
-                            i++; break;
-                        case 'u':
-                        {
-                            if (i + 5 >= input.Length)
-                            {
-                                throw new ArgumentException("string contains illegal character");
-                            }
-
-                            string digits = input[(i + 2)..(i + 6)];
-                            if (!IsCorrectHex(digits))
-                            {
-                                throw new ArgumentException("string contains illegal character");
-                            }
-
-                            break;
-                        }
-                        default: throw new ArgumentException("string contains illegal character");
-                    }
-                }
-            }
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
     /// Пытается выделить обособленную кавычками строку из данной строки
     /// </summary>
     /// <param name="stringToSelect">Данная строка</param>
@@ -486,7 +470,7 @@ public static class JsonParser
                 // Добавляем обособление строки кавычками
                 result = '"' + result + '"';
 
-                if (!IsValidString(result))
+                if (!JsonUtility.IsValidString(result))
                 {
                     throw new FormatException("incorrect string");
                 }
@@ -672,7 +656,7 @@ public static class JsonParser
             result = new JsonToken(res);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -683,7 +667,7 @@ public static class JsonParser
             result = new JsonToken(res);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -694,7 +678,7 @@ public static class JsonParser
             result = new JsonToken(res);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -705,7 +689,7 @@ public static class JsonParser
             result = new JsonToken(res);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -716,7 +700,7 @@ public static class JsonParser
             result = new JsonToken(null);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -727,7 +711,7 @@ public static class JsonParser
             result = new JsonToken(res);
             return newIndex;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }
@@ -871,54 +855,14 @@ public static class JsonParser
             throw new FormatException("JSON syntax error: " + e.Message);
         }
     }
-    
-    /// <summary>
-    /// Преобразует псевдомассив (словарь, где в качестве ключей используются строковые представления индексов)
-    /// в массив строк. Обратите внимание, что индексы не должны пропускаться.
-    /// </summary>
-    /// <param name="pseudoArray"></param>
-    /// <returns></returns>
-    /// <exception cref="FormatException"></exception>
-    public static List<string> ConvertPseudoArrayToList(Dictionary<string, string> pseudoArray)
-    {
-        var maxKey = -1;
-        
-        // Проверяем, что все ключи pseudoArray являются строковыми представлениями чисел
-        foreach (var keyValue in pseudoArray)
-        {
-            if (!int.TryParse(keyValue.Key, out int integerKey) || integerKey < 0)
-            {
-                throw new FormatException("invalid pseudo array");
-            }
-            
-            maxKey = Math.Max(maxKey, integerKey);
-        }
-
-        string[] result = new string[maxKey + 1];
-        
-        for (int i = 0; i <= maxKey; i++)
-        {
-            if (pseudoArray.ContainsKey(i.ToString()))
-            {
-                result[i] = (pseudoArray[i.ToString()]);
-            }
-            else
-            {
-                // В случае пропуска индекса пробрасываем исключение
-                throw new FormatException("invalid pseudo array");
-            }
-        }
-
-        return result.ToList();
-    }
 
     /// <summary>
     /// Возвращает строковое представление списка IJsonObject
     /// </summary>
     /// <param name="jsonObjects"></param>
     /// <returns></returns>
-    public static string StringifyIJsonList(List<IJsonObject> jsonObjects)
+    public static string Stringify(List<IJsonObject> jsonObjects)
     {
-        return JsonParser.Stringify(jsonObjects.Select(JsonParser.Stringify).ToList());
+        return Stringify(jsonObjects.Select(Stringify).ToList());
     }
 }

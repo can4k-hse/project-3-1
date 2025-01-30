@@ -70,12 +70,13 @@ public class Handler
             "clear. Отчистить консоль",
             "help. Вывести список доступных команд",
             "exit. Завершить сессию",
-            "1. Изменить источник ввода данных",
-            "2. Ввести данные",
-            "[]3. Отфильтровать данные",
-            "[]4. Отсортировать данные",
-            "[]5. Узнать",
-            "[]6. Вывести данные",
+            "1. Ввести данные",
+            "2. Изменить источник ввода данных",
+            "3. Вывести данные",
+            "4. Изменить источник вывода данных",
+            "[]5. Отфильтровать данные",
+            "[]6. Отсортировать данные",
+            "[]7. Узнать что-то",
         ];
         
         Console.WriteLine(string.Join("\n", commands) + "\n");
@@ -142,19 +143,67 @@ public class Handler
             default: UnknownCommand(); break;
         }
     }
+    
+    private void SwitchOutputCommand()
+    {
+        Console.WriteLine("Укажите новый способ вывода данных:");
+        string[] commands =
+        [
+            "1. Вывод через консоль",
+            "2. Вывод через файл",
+            "3. Отмена"
+        ];
+        
+        Console.WriteLine(string.Join("\n", commands));
+
+        string cmd = Console.ReadLine() ?? "";
+        switch (cmd)
+        {
+            case "1":
+            {
+                _state.SetOutputToConsole();
+                Console.WriteLine("Данные будут выводиться в консоль");
+                return;
+            }
+            case "2":
+            {
+                Console.Write("Введите путь к файлу: ");
+                string filePath = Console.ReadLine() ?? "";
+                _state.SetOutputToFile(filePath);
+                Console.WriteLine("Данные будут выводиться в файл");
+                return;
+            }
+            case "3":
+            {
+                return;
+            }
+            default: UnknownCommand(); break;
+        }
+    }
 
     private void InputCommand()
     {
         try
         {
-            _state.TryReadData();
+            _state.ReadData();
             Console.WriteLine("Данные успешно введены.");
         }
         catch (Exception e)
         {
             Console.WriteLine("При вводе данных произошла ошибка: " + e.Message); 
         }
-       
+    }
+    
+    private void OutputCommand()
+    {
+        try
+        {
+            _state.WriteData();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("При выводе данных произошла ошибка: " + e.Message); 
+        }
     }
 
     /// <summary>
@@ -171,10 +220,10 @@ public class Handler
 
         switch (command)
         {
-            case "1": SwitchInputCommand(); break;
-            case "2": InputCommand(); break;
-            case "3": throw new NotImplementedException();
-            case "4": throw new NotImplementedException();
+            case "1": InputCommand(); break;
+            case "2": SwitchInputCommand(); break;
+            case "3": OutputCommand(); break;
+            case "4": SwitchOutputCommand(); break;
             case "5": throw new NotImplementedException();
             case "6": throw new NotImplementedException();
             case "exit": Exit(); break;

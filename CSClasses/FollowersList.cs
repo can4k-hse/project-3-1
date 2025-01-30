@@ -15,17 +15,17 @@ public class FollowersList : IJsonObject
 
     public IEnumerable<string> GetAllFields()
     {
-        return ["elements"]; // Возвращаем единственное поле
+        return ["\"elements\""]; // Возвращаем единственное поле
     }
 
     public string? GetField(string fieldName)
     {
         try
         {
-            if (fieldName == "elements")
+            if (fieldName == "\"elements\"")
             {
                 // Возвращаем строковое представление массива элементов
-                return JsonParser.StringifyIJsonList(
+                return JsonParser.Stringify(
                     (_followers.Select(obj => (IJsonObject)obj)).ToList()
                 );
             }
@@ -49,7 +49,7 @@ public class FollowersList : IJsonObject
         {
             // Парисим данные
             var parsedValue = JsonParser.Parse(value);
-            var sArray = JsonParser.ConvertPseudoArrayToList(parsedValue);
+            var sArray = JsonUtility.ConvertPseudoArrayToList(parsedValue);
 
             // Записываем данные в промежуточный массив
             var tmp = new List<Follower>();

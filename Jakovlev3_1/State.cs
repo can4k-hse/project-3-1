@@ -5,6 +5,7 @@
 
 // TODO FIX DEFAULT INPUT
 
+using System.Text;
 using CSClasses;
 using JSONLibrary.Classes;
 public class State
@@ -12,7 +13,8 @@ public class State
     /// <summary>
     /// Список последователей
     /// </summary>
-    private FollowersList Followers; 
+    private FollowersList _followers; 
+    private FollowersList _loadedFollowers = new(); 
     public State()
     {
     }
@@ -63,7 +65,7 @@ public class State
     /// Пытается считать данные выбранным способом и записать в Followers
     /// </summary>
     /// <returns></returns>
-    public void TryReadData()
+    public void ReadData()
     {
         StreamReader inputStream;
 
@@ -92,6 +94,52 @@ public class State
         JsonParser.ReadJson(tmp, inputStream);
         
         // В случае успешного считывания назначаем ссылку
-        Followers = tmp;
+        _loadedFollowers = tmp;
+    }
+    
+    /// <summary>
+    /// Относительный путь к файлу вывода данных.
+    /// </summary>
+    private string? outputFilePath = "./../../../followers-out.json";
+
+    /// <summary>
+    /// Режим вывода
+    /// </summary>
+    private IOMode outputMode = IOMode.File;
+
+    /// <summary>
+    /// Изменяет способ вывода данных на консоль
+    /// </summary>
+    public void SetOutputToConsole()
+    {
+        outputMode = IOMode.Console;
+        outputFilePath = null;
+    }
+    
+    /// <summary>
+    /// Изменяет источник вывода данных на данный файл
+    /// </summary>
+    /// <param name="filePath"></param>
+    public void SetOutputToFile(string filePath)
+    {
+        outputMode = IOMode.File;
+        outputFilePath = filePath;
+    }
+
+    /// <summary>
+    /// Пытается вывести данные выбранным способом из Followers
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public void WriteData()
+    {
+        StreamWriter outputStream = outputMode switch
+        {
+            IOMode.Console => new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding),
+            IOMode.File => new StreamWriter(File.Open(outputFilePath, FileMode.OpenOrCreate)),
+            _ => throw new NotImplementedException("wrong output method")
+        };
+
+        outputStream.AutoFlush = true;
+        JsonParser.WriteJson(_loadedFollowers, outputStream);
     }
 }

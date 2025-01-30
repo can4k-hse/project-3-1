@@ -11,20 +11,19 @@ namespace CSClasses;
 // TODO сделать заполнение по умолчанию
 public struct Follower : IJsonObject
 {
-    public string Id { get; private set; }
-    public string Icon { get; private set; }
-    public string Label { get; private set; }
-    public string Description { get; private set; }
-    public string Comments { get; private set; }
-    public int Lifetime { get; private set; }
-    public string UniquenessGroup { get; private set; }
+    public string Id { get; private set; } = "\"\"";
+    public string Icon { get; private set; } = "\"\"";
+    public string Label { get; private set; } = "\"\"";
+    public string Description { get; private set; } = "\"\"";
+    public string Comments { get; private set; } = "\"\"";
+    public int Lifetime { get; private set; } = 0;
+    public string UniquenessGroup { get; private set; } = "\"\"";
     
-    public string DecayTo { get; private set; }
+    public string DecayTo { get; private set; } = "\"\"";
     
     public FollowerAspects Aspects { get; private set; }
     public FollowerXtriggers Xtriggers { get; private set; }
-    
-    // TODO добавить парсеры для словарей
+    public Follower() {}
     
     /// <summary>
     /// Конструктор структуры Follower
@@ -41,18 +40,26 @@ public struct Follower : IJsonObject
         }
         catch (Exception e)
         {
-            throw new FormatException("wrong follower data" + e.Message);
+            throw new FormatException("wrong follower data " + e.Message);
         }
     }
     
     
-    /// <summary>
-    /// Перечисление всех полей тождественного JSON
-    /// </summary>
-    private const string AllFields = "id label description xtrigger aspects uniquenessgroup lifetime icon decayTo";
     public IEnumerable<string> GetAllFields()
     {
-        return AllFields.Split(' ');
+        return
+        [
+            "\"id\"",
+            "\"icon\"",
+            "\"decayTo\"",
+            "\"label\"",
+            "\"description\"",
+            "\"uniquenessgroup\"",
+            "\"lifetime\"",
+            "\"comments\"",
+            "\"xtriggers\"",
+            "\"aspects\""
+        ];
     }
     
     public string? GetField(string fieldName)

@@ -1,7 +1,7 @@
 ﻿// Author: Alexander Yakovlev
 // CreatedAt: 20 января 2025 г. 20:13:23
 // Filename: Program.cs
-// Summary: Точка входа в приложение
+// Summary: Точка входа в программу
 
 
 using JSONLibrary.Classes;
