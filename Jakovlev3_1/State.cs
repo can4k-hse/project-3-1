@@ -73,7 +73,7 @@ public class State
         {
             case IOMode.File:
             {
-                Console.WriteLine("Данные считываются по пути: " + inputFilePath);
+                Console.WriteLine("Данные считываются из файла по пути: " + inputFilePath);
                 inputStream = new StreamReader(inputFilePath);
                 break;
             }
@@ -132,12 +132,33 @@ public class State
     /// <exception cref="NotImplementedException"></exception>
     public void WriteData()
     {
-        StreamWriter outputStream = outputMode switch
+        StreamWriter outputStream;
+        switch (outputMode)
         {
-            IOMode.Console => new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding),
-            IOMode.File => new StreamWriter(File.Open(outputFilePath, FileMode.OpenOrCreate)),
-            _ => throw new NotImplementedException("wrong output method")
-        };
+            case IOMode.Console:
+            {
+                outputStream = new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding);
+                break;
+            }
+            case IOMode.File:
+            {
+                Console.WriteLine("Данные сохранятся в файл по пути: " + outputFilePath);
+                
+                // Пытаемся удалить файл, если он уже существует
+                try
+                {
+                    File.Delete(outputFilePath);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+                
+                outputStream = new StreamWriter(File.Open(outputFilePath, FileMode.Create));
+                break;
+            }
+            default: throw new NotImplementedException("wrong output method");
+        }
 
         outputStream.AutoFlush = true;
         JsonParser.WriteJson(_loadedFollowers, outputStream);

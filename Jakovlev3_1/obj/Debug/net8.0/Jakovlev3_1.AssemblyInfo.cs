@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jakovlev3_1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+941fa6f3f8291825fb7e2a9d7baff12edc7e6236")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a82011b02b2864fa2cfba80fadc741cf8601eb2e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jakovlev3_1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jakovlev3_1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

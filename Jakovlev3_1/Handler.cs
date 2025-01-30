@@ -199,6 +199,7 @@ public class Handler
         try
         {
             _state.WriteData();
+            Console.WriteLine("Данные успешно выведены.");
         }
         catch (Exception e)
         {
