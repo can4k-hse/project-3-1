@@ -62,6 +62,22 @@ public struct Follower : IJsonObject
         ];
     }
     
+    /// <summary>
+    /// Возвращает список полей объекта, в которых хранятся примитивные типы
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<string> PrimitiveFields =>
+    [
+        "\"id\"",
+        "\"icon\"",
+        "\"decayTo\"",
+        "\"label\"",
+        "\"description\"",
+        "\"uniquenessgroup\"",
+        "\"lifetime\"",
+        "\"comments\"",
+    ];
+
     public string? GetField(string fieldName)
     {
         return fieldName switch

@@ -4,6 +4,8 @@
 // Summary: Статический класс для преобразования строки в IJsonObject и обратно.
 // Описание JSON содержится на странице https://www.json.org/json-en.html
 
+// TODO Custom exceptions (maybe)
+
 using System.Text;
 using JSONLibrary.Interfaces;
 

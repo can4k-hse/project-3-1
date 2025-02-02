@@ -3,6 +3,8 @@
 // Filename: Handler.cs
 // Summary: Нестатический клас, выполняющий взаимодействие с пользователем
 
+using CSClasses;
+
 public class Handler
 {
     private Handler() {}
@@ -41,7 +43,7 @@ public class Handler
         while (_status is MenuStatus.Enable)
         {
             Console.Write(LineSign + " ");
-            string? command = Console.ReadLine();
+            string command = (Console.ReadLine() ?? "").Trim();
 
             try
             {
@@ -67,16 +69,17 @@ public class Handler
         Console.WriteLine("<Список доступных команд>");
         string[] commands =
         [
-            "clear. Отчистить консоль",
-            "help. Вывести список доступных команд",
-            "exit. Завершить сессию",
-            "1. Ввести данные",
-            "2. Изменить источник ввода данных",
-            "3. Вывести данные",
-            "4. Изменить источник вывода данных",
-            "[]5. Отфильтровать данные",
-            "[]6. Отсортировать данные",
-            "[]7. Узнать что-то",
+            "clear - Отчистить консоль",
+            "help - Вывести список доступных команд",
+            "exit - Завершить сессию",
+            "[]state - Вывести текущую конфигурацию",
+            "1 - Ввести данные",
+            "2 - Изменить источник ввода данных",
+            "3 - Вывести данные",
+            "4 - Изменить источник вывода данных",
+            "[]5 - Отфильтровать данные",
+            "[]6 - Отсортировать данные",
+            "[]7 - Узнать что-то",
         ];
         
         Console.WriteLine(string.Join("\n", commands) + "\n");
@@ -106,7 +109,10 @@ public class Handler
     {
         Console.Clear();
     }
-
+    
+    /// <summary>
+    /// Обработчик команды способ ввода данных
+    /// </summary>
     private void SwitchInputCommand()
     {
         Console.WriteLine("Укажите новый способ ввода данных:");
@@ -144,6 +150,9 @@ public class Handler
         }
     }
     
+    /// <summary>
+    /// Обработчик команды смены способа вывода данных
+    /// </summary>
     private void SwitchOutputCommand()
     {
         Console.WriteLine("Укажите новый способ вывода данных:");
@@ -181,6 +190,9 @@ public class Handler
         }
     }
 
+    /// <summary>
+    /// Обработчик команды ввода данных
+    /// </summary>
     private void InputCommand()
     {
         try
@@ -207,8 +219,17 @@ public class Handler
         }
     }
 
+    private void SortCommand()
+    {
+        // Выбор поля для сортировки
+        // Отображение поля для сортировки в интерфейсе
+        // Сортировка по значениям выбранного поля
+
+        var fields = Follower.PrimitiveFields.ToArray();
+    }
+
     /// <summary>
-    /// Обработчик для команд
+    /// Обработчик команд
     /// </summary>
     /// <param name="command"></param>
     /// <exception cref="Exception"></exception>
@@ -227,9 +248,11 @@ public class Handler
             case "4": SwitchOutputCommand(); break;
             case "5": throw new NotImplementedException();
             case "6": throw new NotImplementedException();
+            case "7": throw new NotImplementedException();
             case "exit": Exit(); break;
             case "help": ShowCommands(); break;
             case "clear": ClearCommand(); break;
+            case "state": throw new NotImplementedException();
             default: UnknownCommand(); break;
         }
     }

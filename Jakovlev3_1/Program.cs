@@ -4,7 +4,6 @@
 // Summary: Точка входа в программу
 
 
-using JSONLibrary.Classes;
 using System.Globalization;
 
 // TODO реализовать цикл повторения программы
@@ -12,9 +11,21 @@ class Program
 {
     private static void Main(string[] args)
     {
-        Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
+        InputSelectString test = new(["а", "аб", "абв", "привет", "1", "12", "123", "хуй", "хуйхуйхуй"]);
         
-        var handler = new Handler(new State());
-        handler.Start();
+        Console.WriteLine("test");
+        Console.WriteLine(test.Input());
+
+        // var handler = new Handler(new State());
+        // handler.Start();
+        //
+        // const string fieldName = "123";
+        // FollowerComparer tmp = new((a, b) => 
+        //     string.Compare(a.GetField(fieldName), b.GetField(fieldName), 
+        //         StringComparison.Ordinal));
+        //
+        //
     }
 }

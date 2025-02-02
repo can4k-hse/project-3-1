@@ -15,6 +15,7 @@ public class State
     /// </summary>
     private FollowersList _followers; 
     private FollowersList _loadedFollowers = new(); 
+    
     public State()
     {
     }
@@ -162,5 +163,15 @@ public class State
 
         outputStream.AutoFlush = true;
         JsonParser.WriteJson(_loadedFollowers, outputStream);
+    }
+
+    public void GetFieldsToSort()
+    {
+        
+    }
+    
+    public void SortByField(string fieldName)
+    {
+        Follower _follower = new(JsonParser.Parse(JsonParser.Stringify(_followers)));
     }
 }
