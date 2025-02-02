@@ -138,4 +138,23 @@ public static class JsonUtility
         // Возвращаем исходную строку
         return str;
     }
+
+    /// <summary>
+    /// Добавляет в начало и в конец строки кавычки, чтобы однозначно обозначить строковой литерал согласно JSON
+    /// </summary>
+    /// <param name="str">Данная строка</param>
+    /// <returns>Измененную строку</returns>
+    public static string AddQuotes(string str)
+    {
+        if (!str.StartsWith($"\""))
+        {
+            str = "\"" + str;
+        }
+        if (!str.EndsWith($"\""))
+        {
+            str += "\"";
+        }
+
+        return str;
+    }
 }

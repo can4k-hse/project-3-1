@@ -24,7 +24,6 @@ public static class JsonParser
     /// <exception cref="FormatException">Невозможно запарсить строку в объект</exception>
     public static void ReadJson(IJsonObject jsonObject, StreamReader stream)
     {
-        
         // Временно изменяем поток ввода на данный
         Console.SetIn(stream);
         string result = Console.In.ReadToEnd();
@@ -47,7 +46,7 @@ public static class JsonParser
             var defaultInput = new StreamReader(Console.OpenStandardInput());
             Console.SetIn(defaultInput);
         }
-        
+
         // Пытаемся считать данные
         try
         {
@@ -61,7 +60,7 @@ public static class JsonParser
             throw new FormatException("Json data error: " + e.Message);
         }
     }
-    
+
     /// <summary>
     /// Выводит json объект в поток
     /// </summary>
@@ -76,6 +75,7 @@ public static class JsonParser
         try
         {
             string output = Stringify(json);
+            ModifyJson(ref output);
             Console.WriteLine(output);
         }
         catch (Exception e)
@@ -86,10 +86,80 @@ public static class JsonParser
         {
             // Возвращаем стандартный вывод для корректной работы меню
             stream.Dispose();
-            var defaultOutput = new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding); // укажем кодировку
+            var defaultOutput =
+                new StreamWriter(Console.OpenStandardOutput(), Console.OutputEncoding); // укажем кодировку
             defaultOutput.AutoFlush = true;
             Console.SetOut(defaultOutput);
         }
+    }
+
+    /// <summary>
+    /// Добавляет переносы после и пробелы для более удобного восприятия JSON
+    /// </summary>
+    /// <param name="json">Строку для изменения</param>
+    private static void ModifyJson(ref string json)
+    {
+        string res = string.Empty;
+        List<string> lines = [];
+        
+        HashSet<int> quotesPositions = GetQuotesPositions(json);
+        bool inString = false;
+        
+        // Счетчик вложенности (табуляции)
+        int tabulation = 0;
+        
+        // Накопительная строка
+        string cur_line = "";
+        
+        for (int i = 0; i < json.Length; i++)
+        {
+            // Данный символ
+            char c = json[i];
+            
+            if (quotesPositions.Contains(i)) // Отслеживаем вход в кавычки
+            {
+                cur_line += c;
+                inString ^= true;
+                continue;
+            }
+            if (inString) // В кавычках отступ не требуется
+            {
+                cur_line += c;
+                continue;
+            }
+            
+            switch (c)
+            {
+                case ':':
+                    cur_line += ": ";
+                    break;
+                case '[' or '{':
+                    cur_line += c;
+                    tabulation++;
+                    lines.Add(cur_line);
+                    cur_line = new string('\t', tabulation);
+                    break;
+                case ']' or '}':
+                    // Выводим накопленную строку
+                    lines.Add(cur_line);
+                    cur_line = "";
+                    
+                    // Заполняем текущую строку
+                    cur_line = new string('\t', --tabulation);
+                    cur_line += c;
+                    lines.Add(cur_line);
+                    cur_line = new string('\t', tabulation);
+                    break;
+                case ',':
+                    cur_line += c;
+                    lines.Add(cur_line);
+                    cur_line = new string('\t', tabulation);
+                    break;
+                default: cur_line += c; break;
+            }
+        }
+
+        json = string.Join(Environment.NewLine, lines);
     }
 
     /// <summary>

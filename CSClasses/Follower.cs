@@ -80,6 +80,10 @@ public struct Follower : IJsonObject
 
     public string? GetField(string fieldName)
     {
+        // В случае, если в fieldName забыли указать кавычки
+        // добавим их
+        
+        
         return fieldName switch
         {
             "\"id\"" => $"{Id}",

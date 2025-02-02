@@ -1,0 +1,74 @@
+{
+  "elements": [
+    {
+      "id": "z",
+      "icon": "",
+      "decayTo": "",
+      "label": "Оклер, знакомая",
+      "description": "Оклер начитана и болезненно впечатлительна. [Возможно, получится превратить в последователя.]",
+      "uniquenessgroup": "uqauclair",
+      "lifetime": 0,
+      "comments": "",
+      "xtriggers": {
+        "recruiting": "auclair_b",
+        "killmortal": "corpse",
+        "derangemortal": "lunatic",
+        "rebellion": "auclair_r"
+      },
+      "aspects": {
+        "mortal": 1,
+        "acquaintance": 1,
+        "follower_lustenlightenment": 1
+      }
+    },
+    {
+      "id": "o",
+      "icon": "",
+      "decayTo": "",
+      "label": "Оклер, неофит",
+      "description": "Оклер немногословна, педантична и безжалостна.",
+      "uniquenessgroup": "uqauclair",
+      "lifetime": 0,
+      "comments": "",
+      "xtriggers": {
+        "promotiontodisciple": "auclair_c",
+        "killmortal": "corpse",
+        "derangemortal": "lunatic",
+        "capturefollower": "auclair_p",
+        "rebellion": "auclair_r"
+      },
+      "aspects": {
+        "mortal": 1,
+        "follower": 1,
+        "winter": 2,
+        "follower_lustenlightenment": 1
+      }
+    },
+    {
+      "id": "v",
+      "icon": "",
+      "decayTo": "",
+      "label": "Оклер, адепт",
+      "description": "Оклер редко говорит. Она тщательно подбирает слова и старается как можно меньше двигаться. Никто не видел, чтобы она моргала.",
+      "uniquenessgroup": "uqauclair",
+      "lifetime": 0,
+      "comments": "",
+      "xtriggers": {
+        "promotionto_d_winter": "auclair_d",
+        "killmortal": "corpse",
+        "derangemortal": "lunatic",
+        "capturefollower": "auclair_p",
+        "rebellion": "auclair_r_c"
+      },
+      "aspects": {
+        "mortal": 1,
+        "follower": 1,
+        "disciple": 1,
+        "potential": 1,
+        "winter": 5,
+        "follower_lustenlightenment": 1
+      }
+    }
+  ]
+}
+    

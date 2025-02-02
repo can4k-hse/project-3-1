@@ -8,15 +8,16 @@
 using System.Text;
 using CSClasses;
 using JSONLibrary.Classes;
+
 public class State
 {
     /// <summary>
     /// Список последователей
     /// </summary>
     private FollowersList _followers = new();
-    
-    private FollowersList _loadedFollowers = new(); 
-    
+
+    private FollowersList _loadedFollowers = new();
+
     public State()
     {
     }
@@ -90,15 +91,15 @@ public class State
 
             default: throw new NotImplementedException("wrong input method");
         }
-            
+
         // Пытаемся считать данные в tmp список
         FollowersList tmp = new FollowersList();
         JsonParser.ReadJson(tmp, inputStream);
-        
+
         // В случае успешного считывания назначаем ссылку
-        _loadedFollowers = tmp;
+        _loadedFollowers = _followers = tmp;
     }
-    
+
     /// <summary>
     /// Относительный путь к файлу вывода данных.
     /// </summary>
@@ -117,7 +118,7 @@ public class State
         outputMode = IOMode.Console;
         outputFilePath = null;
     }
-    
+
     /// <summary>
     /// Изменяет источник вывода данных на данный файл
     /// </summary>
@@ -144,8 +145,8 @@ public class State
             }
             case IOMode.File:
             {
-                Console.WriteLine("Данные сохранятся в файл по пути: " + outputFilePath);
-                
+                Console.WriteLine("Данные выведутся в файл по пути: " + outputFilePath);
+
                 // Пытаемся удалить файл, если он уже существует
                 try
                 {
@@ -155,7 +156,7 @@ public class State
                 {
                     // ignored
                 }
-                
+
                 outputStream = new StreamWriter(File.Open(outputFilePath, FileMode.Create));
                 break;
             }
@@ -163,11 +164,24 @@ public class State
         }
 
         outputStream.AutoFlush = true;
-        JsonParser.WriteJson(_loadedFollowers, outputStream);
+        JsonParser.WriteJson(_followers, outputStream);
     }
-    
+
     public void SortByField(string fieldName)
     {
-        FollowersList _follower = new(JsonParser.Parse(JsonParser.Stringify(_followers)));
+        // Создаем глубокую копию текущего списка FollowersList
+        FollowersList tempFollowers = new(JsonParser.Parse(JsonParser.Stringify(_followers)));
+        
+        // Сортируем followers по полю в лексикографическом формате
+        tempFollowers.Followers.Sort(new FollowerComparer((followerA, followerB) =>
+            string.Compare(
+                followerA.GetField(JsonUtility.AddQuotes(fieldName)), 
+                followerB.GetField(JsonUtility.AddQuotes(fieldName)), 
+                StringComparison.Ordinal)
+            )
+        );
+
+        // Назначаем новую ссылку
+        _followers = tempFollowers;
     }
 }

@@ -27,8 +27,12 @@ public class FollowersList : IJsonObject
             throw new FormatException("wrong follower list data " + e.Message);
         }
     }
-    
-    private List<Follower> _followers = [];
+
+    public List<Follower> Followers
+    {
+        get;
+        private set;
+    } = [];
 
     public IEnumerable<string> GetAllFields()
     {
@@ -43,7 +47,7 @@ public class FollowersList : IJsonObject
             {
                 // Возвращаем строковое представление массива элементов
                 return JsonParser.Stringify(
-                    (_followers.Select(obj => (IJsonObject)obj)).ToList()
+                    (Followers.Select(obj => (IJsonObject)obj)).ToList()
                 );
             }
 
@@ -77,7 +81,7 @@ public class FollowersList : IJsonObject
             }
 
             // Переназначаем ссылку только если новое значение полностью корректное
-            _followers = tmp;
+            Followers = tmp;
         }
         catch (Exception e)
         {
