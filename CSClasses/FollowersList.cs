@@ -11,6 +11,23 @@ namespace CSClasses;
 
 public class FollowersList : IJsonObject
 {
+    public FollowersList() {}
+    
+    public FollowersList(Dictionary<string, string> data)
+    {
+        try
+        {
+            foreach (var pair in data)
+            {
+                SetField(pair.Key, pair.Value);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new FormatException("wrong follower list data " + e.Message);
+        }
+    }
+    
     private List<Follower> _followers = [];
 
     public IEnumerable<string> GetAllFields()

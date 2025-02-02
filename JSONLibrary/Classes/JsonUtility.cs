@@ -122,4 +122,20 @@ public static class JsonUtility
 
         return true;
     }
+
+    /// <summary>
+    /// Удаляет кавычки из строкового литерала
+    /// </summary>
+    /// <param name="str">Данная строка</param>
+    /// <returns>Измененная строка или исходная, если str не начинается или заканчивается с \"</returns>
+    public static string RemoveQuotes(string str)
+    {
+        if (str.StartsWith($"\"") && str.EndsWith($"\""))
+        {
+            return str[1..^1];
+        }
+
+        // Возвращаем исходную строку
+        return str;
+    }
 }

@@ -25,6 +25,11 @@ public class InputSelectString
     /// </summary>
     private string? _hunch;
 
+    /// <summary>
+    /// Длина неизменяемого префикса строки
+    /// </summary>
+    private int _welcomeStringLen = 0;
+
     public InputSelectString(string[] values)
     {
         _values = values;
@@ -78,21 +83,40 @@ public class InputSelectString
     }
 
     /// <summary>
+    /// Устанавливает значения, связанные с пользовательским вводом, по умолчанию
+    /// </summary>
+    private void SetDefault()
+    {
+        _hunches = [];
+        _welcomeStringLen = 0;
+        _prefix = "";
+        _hunch = "";
+    }
+    
+    /// <summary>
     /// Возвращает введенную пользователем строку
     /// </summary>
     /// <param name="welcomeMessage">Строковое сообщение пользователю перед вводом</param>
     /// <returns></returns>
-    public string Input(string welcomeMessage = "Начинайте вводить: ")
+    public string Input(string welcomeString = "Начинайте вводить: ")
     {
-        Console.WriteLine(welcomeMessage);
-
+        SetDefault();
+        
+        _welcomeStringLen = welcomeString.Length;
+        Console.Write(welcomeString);
+        
         while (true)
         {
             ConsoleKeyInfo key = Console.ReadKey();
 
-            if (HandleConsoleKey(key))
+            if (HandleConsoleKey(key)) // пользователь нажал Enter
             {
+                // Зачищаем все лишнее
+                _hunch = string.Empty;
+                UpdateUI(ConsoleColor.Gray);
                 Console.WriteLine(); // Профилактический вывод в консоль
+                
+                // Возвращаем введенный префикс
                 return _prefix;
             }
             
@@ -184,11 +208,11 @@ public class InputSelectString
         ConsoleColor previousColor = Console.ForegroundColor;
 
         // Чистим последнюю строку консоли
-        Console.SetCursorPosition(0, cursorTop);
-        Console.Write(new string(' ', Console.BufferWidth));
+        Console.SetCursorPosition(_welcomeStringLen, cursorTop);
+        Console.Write(new string(' ', Console.BufferWidth - _welcomeStringLen));
 
         // Возвращаем курсор на исходную позицию
-        Console.SetCursorPosition(0, cursorTop);
+        Console.SetCursorPosition(_welcomeStringLen, cursorTop);
 
         // Задаем данный цвет консоли и выводим text
         Console.ForegroundColor = color;

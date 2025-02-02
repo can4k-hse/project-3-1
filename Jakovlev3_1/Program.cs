@@ -12,14 +12,8 @@ class Program
     private static void Main(string[] args)
     {
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-
-        InputSelectString test = new(["а", "аб", "абв", "привет", "1", "12", "123", "хуй", "хуйхуйхуй"]);
-        
-        Console.WriteLine("test");
-        Console.WriteLine(test.Input());
-
-        // var handler = new Handler(new State());
-        // handler.Start();
+        var handler = new Handler(new State());
+        handler.Start();
         //
         // const string fieldName = "123";
         // FollowerComparer tmp = new((a, b) => 

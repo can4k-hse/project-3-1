@@ -4,6 +4,7 @@
 // Summary: Нестатический клас, выполняющий взаимодействие с пользователем
 
 using CSClasses;
+using JSONLibrary.Classes;
 
 public class Handler
 {
@@ -39,19 +40,20 @@ public class Handler
         
         Console.WriteLine("Начало сеанса.");
         ShowCommands();
-
+        
+        // Создаем поле для ввода команд
+        InputSelectString selectString = new(_commads);
+        
         while (_status is MenuStatus.Enable)
         {
-            Console.Write(LineSign + " ");
-            string command = (Console.ReadLine() ?? "").Trim();
-
+            string command = selectString.Input(LineSign + " ");
             try
             {
                 HandleCommand(command);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                ConsoleUtilities.WriteError(e.Message);
             }
         }
     }
@@ -86,6 +88,24 @@ public class Handler
     }
 
     /// <summary>
+    /// Список доступных команд
+    /// </summary>
+    private readonly string[] _commads =
+    [
+        "clear",
+        "help",
+        "exit",
+        "state",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+    ];
+
+    /// <summary>
     /// Завершает работу меню
     /// </summary>
     private void Exit()
@@ -99,7 +119,7 @@ public class Handler
     /// </summary>
     private void UnknownCommand()
     {
-        Console.WriteLine("Неизвестная команда...");
+        ConsoleUtilities.Write("Неизвестная команда...", color:ConsoleColor.Red);
     }
 
     /// <summary>
@@ -125,13 +145,16 @@ public class Handler
         
         Console.WriteLine(string.Join("\n", commands));
 
-        string cmd = Console.ReadLine() ?? "";
+        // Создаем поле ввода для команд
+        InputSelectString selectString = new("1 2 3".Split(' '));
+        string cmd = selectString.Input(LineSign + " ");
+        
         switch (cmd)
         {
             case "1":
             {
                 _state.SetInputToConsole();
-                Console.WriteLine("Данные будут вводиться из консоли");
+                ConsoleUtilities.WriteSuccess("Данные будут вводиться из консоли");
                 return;
             }
             case "2":
@@ -139,7 +162,7 @@ public class Handler
                 Console.Write("Введите путь к файлу: ");
                 string filePath = Console.ReadLine() ?? "";
                 _state.SetInputToFile(filePath);
-                Console.WriteLine("Данные будут вводиться из файла");
+                ConsoleUtilities.WriteSuccess("Данные будут вводиться из файла");
                 return;
             }
             case "3":
@@ -165,13 +188,16 @@ public class Handler
         
         Console.WriteLine(string.Join("\n", commands));
 
-        string cmd = Console.ReadLine() ?? "";
+        // Создаем поле ввода для команд
+        InputSelectString selectString = new("1 2 3".Split(' '));
+        string cmd = selectString.Input(LineSign + " ");
+        
         switch (cmd)
         {
             case "1":
             {
                 _state.SetOutputToConsole();
-                Console.WriteLine("Данные будут выводиться в консоль");
+                ConsoleUtilities.WriteSuccess("Данные будут выводиться в консоль.");
                 return;
             }
             case "2":
@@ -179,7 +205,7 @@ public class Handler
                 Console.Write("Введите путь к файлу: ");
                 string filePath = Console.ReadLine() ?? "";
                 _state.SetOutputToFile(filePath);
-                Console.WriteLine("Данные будут выводиться в файл");
+                ConsoleUtilities.WriteSuccess("Данные будут выводиться в файл");
                 return;
             }
             case "3":
@@ -198,11 +224,11 @@ public class Handler
         try
         {
             _state.ReadData();
-            Console.WriteLine("Данные успешно введены.");
+            ConsoleUtilities.WriteSuccess("Данные успешно введены.");
         }
         catch (Exception e)
         {
-            Console.WriteLine("При вводе данных произошла ошибка: " + e.Message); 
+            ConsoleUtilities.WriteError("При вводе данных произошла ошибка: " + e.Message); 
         }
     }
     
@@ -211,11 +237,11 @@ public class Handler
         try
         {
             _state.WriteData();
-            Console.WriteLine("Данные успешно выведены.");
+            ConsoleUtilities.WriteSuccess("Данные успешно выведены.");
         }
         catch (Exception e)
         {
-            Console.WriteLine("При выводе данных произошла ошибка: " + e.Message); 
+            ConsoleUtilities.WriteError("При выводе данных произошла ошибка: " + e.Message); 
         }
     }
 
@@ -225,7 +251,29 @@ public class Handler
         // Отображение поля для сортировки в интерфейсе
         // Сортировка по значениям выбранного поля
 
-        var fields = Follower.PrimitiveFields.ToArray();
+        // Получаем список всех примитивов Follower, удаляем кавычки
+        string[] fields = Follower.PrimitiveFields.Select(JsonUtility.RemoveQuotes).ToArray();
+        ConsoleUtilities.Write("Сортировку можно осуществить по следующим полям:", color:ConsoleColor.White);
+        Console.WriteLine(string.Join(' ', fields));
+        InputSelectString inputSelect = new(fields);
+        
+        // Вводим название поля
+        string filed = inputSelect.Input("Название поля: ");
+        if (!fields.Contains(filed))
+        {
+            UnknownCommand();
+            return;
+        }
+
+        try
+        {
+            _state.SortByField(filed);
+            ConsoleUtilities.WriteSuccess("Объекты успешно отсортированы");
+        }
+        catch (Exception e)
+        {
+            ConsoleUtilities.WriteError("При сортировки произошла ошибка:" + e.Message);
+        }
     }
 
     /// <summary>
@@ -247,7 +295,7 @@ public class Handler
             case "3": OutputCommand(); break;
             case "4": SwitchOutputCommand(); break;
             case "5": throw new NotImplementedException();
-            case "6": throw new NotImplementedException();
+            case "6": SortCommand(); break;
             case "7": throw new NotImplementedException();
             case "exit": Exit(); break;
             case "help": ShowCommands(); break;
