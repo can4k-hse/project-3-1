@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONLibrary", "JSONLibrary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSClasses", "CSClasses\CSClasses.csproj", "{EC5C0FB8-81C3-41AE-8A96-5781029749EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleLibrary", "ConsoleLibrary\ConsoleLibrary.csproj", "{091EF877-260B-4044-A566-05413826E935}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC5C0FB8-81C3-41AE-8A96-5781029749EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{091EF877-260B-4044-A566-05413826E935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{091EF877-260B-4044-A566-05413826E935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{091EF877-260B-4044-A566-05413826E935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{091EF877-260B-4044-A566-05413826E935}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

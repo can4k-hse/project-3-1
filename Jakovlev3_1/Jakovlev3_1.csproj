@@ -8,8 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ConsoleLibrary\ConsoleLibrary.csproj" />
       <ProjectReference Include="..\CSClasses\CSClasses.csproj" />
       <ProjectReference Include="..\JSONLibrary\JSONLibrary.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EditorConfigFiles Remove=".editorconfig" />
     </ItemGroup>
 
 </Project>

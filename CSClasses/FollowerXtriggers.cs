@@ -6,39 +6,48 @@
 
 using JSONLibrary.Classes;
 using JSONLibrary.Interfaces;
-namespace CSClasses;
-
-public readonly struct FollowerXtriggers : IJsonObject
+namespace CSClasses
 {
-    private readonly Dictionary<string, string> _wrappedDictionary;
-
-    public FollowerXtriggers(string stringifyDictionary)
+    public readonly struct FollowerXtriggers : IJsonObject
     {
-        Dictionary<string, string> tmp = JsonParser.Parse(stringifyDictionary);
-        _wrappedDictionary = [];
-        foreach (var pair in tmp)
+        public readonly Dictionary<string, string> WrappedDictionary;
+
+        public FollowerXtriggers(string stringifyDictionary)
         {
-            _wrappedDictionary.Add(pair.Key, pair.Value);
+            Dictionary<string, string> tmp = JsonParser.Parse(stringifyDictionary);
+            WrappedDictionary = [];
+            foreach (KeyValuePair<string, string> pair in tmp)
+            {
+                WrappedDictionary.Add(pair.Key, pair.Value);
+            }
         }
-    }
     
-    public IEnumerable<string> GetAllFields()
-    {
-        return _wrappedDictionary.Keys;
-    }
-
-    public string? GetField(string fieldName)
-    {
-        return _wrappedDictionary.GetValueOrDefault(fieldName);
-    }
-
-    public void SetField(string fieldName, string value)
-    {
-        if (!_wrappedDictionary.ContainsKey(fieldName))
+        public IEnumerable<string> GetAllFields()
         {
-            throw new KeyNotFoundException("wrong field name");
+            return WrappedDictionary.Keys;
         }
 
-        _wrappedDictionary[fieldName] = value;
+        public string? GetField(string fieldName)
+        {
+            // В случае, если в fieldName забыли указать кавычки
+            // добавим их
+            fieldName = JsonUtility.AddQuotes(fieldName);
+        
+            return WrappedDictionary.GetValueOrDefault(fieldName);
+        }
+
+        public void SetField(string fieldName, string value)
+        {
+            // В случае, если в fieldName забыли указать кавычки
+            // добавим их
+            fieldName = JsonUtility.AddQuotes(fieldName);
+        
+            if (!WrappedDictionary.ContainsKey(fieldName))
+            {
+                throw new KeyNotFoundException("wrong field name");
+            }
+
+            WrappedDictionary[fieldName] = value;
+        }
     }
 }

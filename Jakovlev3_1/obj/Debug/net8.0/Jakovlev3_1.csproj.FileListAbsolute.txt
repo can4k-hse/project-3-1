@@ -19,3 +19,5 @@ C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\obj\Debug\net8.0\Jakovl
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\bin\Debug\net8.0\CSClasses.dll
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\bin\Debug\net8.0\CSClasses.pdb
 C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\obj\Debug\net8.0\Jakovlev3_1.sourcelink.json
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\bin\Debug\net8.0\ConsoleLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\Jakovlev3_1\bin\Debug\net8.0\ConsoleLibrary.pdb

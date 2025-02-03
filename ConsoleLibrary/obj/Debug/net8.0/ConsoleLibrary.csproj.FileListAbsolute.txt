@@ -1,0 +1,12 @@
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\bin\Debug\net8.0\ConsoleLibrary.deps.json
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\bin\Debug\net8.0\ConsoleLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\bin\Debug\net8.0\ConsoleLibrary.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.AssemblyInfoInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.AssemblyInfo.cs
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.sourcelink.json
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\refint\ConsoleLibrary.dll
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ConsoleLibrary.pdb
+C:\Users\Alexander\RiderProjects\Jakovlev3_1\ConsoleLibrary\obj\Debug\net8.0\ref\ConsoleLibrary.dll

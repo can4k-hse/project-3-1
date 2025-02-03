@@ -9,10 +9,19 @@
       "Jakovlev3_1/1.0.0": {
         "dependencies": {
           "CSClasses": "1.0.0",
+          "ConsoleLibrary": "1.0.0",
           "JSONLibrary": "1.0.0"
         },
         "runtime": {
           "Jakovlev3_1.dll": {}
+        }
+      },
+      "ConsoleLibrary/1.0.0": {
+        "runtime": {
+          "ConsoleLibrary.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "CSClasses/1.0.0": {
@@ -38,6 +47,11 @@
   },
   "libraries": {
     "Jakovlev3_1/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ConsoleLibrary/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

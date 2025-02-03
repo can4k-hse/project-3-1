@@ -1,25 +1,28 @@
-﻿// Author: Alexander Yakovlev
+﻿// Author: Alexander Yakovlev (Александр Александрович Яковлев)
 // CreatedAt: 20 января 2025 г. 20:13:23
 // Filename: Program.cs
 // Summary: Точка входа в программу
+// Дисциплина: Программирование на C#
+// Тема: Проект 3.1 - Основная задача
+// Вариант: 16
 
 
 using System.Globalization;
 
-// TODO реализовать цикл повторения программы
-class Program
+namespace Jakovlev3_1
 {
-    private static void Main(string[] args)
+    internal abstract class Program
     {
-        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-        var handler = new Handler(new State());
-        handler.Start();
-        //
-        // const string fieldName = "123";
-        // FollowerComparer tmp = new((a, b) => 
-        //     string.Compare(a.GetField(fieldName), b.GetField(fieldName), 
-        //         StringComparison.Ordinal));
-        //
-        //
+        private static void Main(string[] args)
+        {
+            // Устанавливаем нужную культуру, чтобы не противоречить формату JSON (дробные числа)
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
+            while (true) // Бесконечный цикл выполнения программы
+            {
+                Handler handler = new Handler(new State());
+                handler.Start();
+            }
+        }
     }
 }

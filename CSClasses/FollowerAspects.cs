@@ -6,44 +6,53 @@
 
 using JSONLibrary.Classes;
 using JSONLibrary.Interfaces;
-namespace CSClasses;
-
-public readonly struct FollowerAspects : IJsonObject
+namespace CSClasses
 {
-    private readonly Dictionary<string, int> _wrappedDictionary;
-
-    public FollowerAspects(string stringifyDictionary)
+    public readonly struct FollowerAspects : IJsonObject
     {
-        Dictionary<string, string> tmp = JsonParser.Parse(stringifyDictionary);
-        _wrappedDictionary = [];
-        foreach (var pair in tmp)
+        private readonly Dictionary<string, int> _wrappedDictionary;
+
+        public FollowerAspects(string stringifyDictionary)
         {
-            if (!int.TryParse(pair.Value, out int parsed))
+            Dictionary<string, string> tmp = JsonParser.Parse(stringifyDictionary);
+            _wrappedDictionary = [];
+            foreach (KeyValuePair<string, string> pair in tmp)
             {
-                throw new ArgumentException("invalid JSON data: wrong type");
-            }
+                if (!int.TryParse(pair.Value, out int parsed))
+                {
+                    throw new ArgumentException("invalid JSON data: wrong type");
+                }
             
-            _wrappedDictionary.Add(pair.Key, parsed);
+                _wrappedDictionary.Add(pair.Key, parsed);
+            }
         }
-    }
     
-    public IEnumerable<string> GetAllFields()
-    {
-        return _wrappedDictionary.Keys;
-    }
-
-    public string? GetField(string fieldName)
-    {
-        return _wrappedDictionary.TryGetValue(fieldName, out int value) ? value.ToString() : null;
-    }
-
-    public void SetField(string fieldName, string value)
-    {
-        if (!_wrappedDictionary.ContainsKey(fieldName))
+        public IEnumerable<string> GetAllFields()
         {
-            throw new KeyNotFoundException("wrong field name");
+            return _wrappedDictionary.Keys;
         }
+
+        public string? GetField(string fieldName)
+        {
+            // В случае, если в fieldName забыли указать кавычки
+            // добавим их
+            fieldName = JsonUtility.AddQuotes(fieldName);
         
-        _wrappedDictionary[fieldName] = int.Parse(value);
+            return _wrappedDictionary.TryGetValue(fieldName, out int value) ? value.ToString() : null;
+        }
+
+        public void SetField(string fieldName, string value)
+        {   
+            // В случае, если в fieldName забыли указать кавычки
+            // добавим их
+            fieldName = JsonUtility.AddQuotes(fieldName);
+        
+            if (!_wrappedDictionary.ContainsKey(fieldName))
+            {
+                throw new KeyNotFoundException("wrong field name");
+            }
+        
+            _wrappedDictionary[fieldName] = int.Parse(value);
+        }
     }
 }
